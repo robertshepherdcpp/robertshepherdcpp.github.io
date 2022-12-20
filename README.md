@@ -2,7 +2,23 @@ Hello Welcome To My Website!
 
 This is where you can find stuff about me and read my blogs!
 
+---------
+### About Me!
+---------
+
+So I am Robert Shepherd, I am a C++ Developer, I am self-taught! ***Many Many Books have been read to get me this far!***. I have quite a few GitHub repositories like the pse library, format library, Decomp etc. Here is a table of them and what I do with them!
+
+Repositories | How often i contribute | My current issues with them  | Link
+------------ | ------------- | ------------- | -------------------
+👩‍💻 pse | ✅ At least 5 commits a day | ⭕️ Lots of the files have bugs | 🔗 https://github.com/robertshepherdcpp/pse
+👩‍💻 files | ✅ I dont really add anything more to them | ⭕️ Not really many issues as they are only small programs | 🔗 https://github.com/robertshepherdcpp/files
+👩‍💻 SerenityOS | ✅ I try to get familiar with the codebase at least every other day | ⭕️ It is a big codebase in SerenityOS! | 🔗 https://github.com/SerenityOS/serenity
+👩‍💻 Decomp | ✅ I don't contribute to it any more | ⭕️ It wasn't really much of a repository and it is very error prone! | 🔗 https://github.com/robertshepherdcpp/Decomp
+👩‍💻 format | ✅ I don't contribute to it any more | ⭕️ I have had it a while and I just thought I would put it on github, it doesn't need anything more added to it as it is just supposed to be a really basic tool. | 🔗 https://github.com/robertshepherdcpp/format
+
+----------------------------
 ### Cool Decreasing Tuple Idiom!
+----------------------------
 
 So recently, I have found a super cool idiom! It is where you can make a tuple shrink, well a tuple of the same types because you cannot have varying return types! So you can just call a member function `remove_first` or anything you want to call it when you are implementing it, and then it shrinks the tuple by one element. It is a simple yet cool way of shrinking a tuple. It's implementation looks something like this:
 
