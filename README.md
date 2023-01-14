@@ -117,3 +117,70 @@ So that uses a cool recursion tequnique in order to free up the element the we g
 
 
 So inconclusion, this is such a simple trick but it is so cool! By the way if you have any feedback please give it to me as this is my first blog!
+
+Mlib Features
+----------------------------------------------------------------------------------------------------
+`mlib::amount`, is a new feature that will allow code like this, [godbolt](https://www.godbolt.org/z/enMhPhv67):
+```C++
+int main()
+{
+    std::string s{};
+    mlib::amount_t<10>.times([&](){s += "a";});
+    std::cout << s << "\n"; // outputs: aaaaaaaaaa
+}
+```
+This will be very useful and it is all happening at compile time, as after all this is a metaprogramming library! You could also do it with `constexpr_while` but this method is more clean and concise.
+
+Here is the implementation, it doesn't need to use the `std`, it is relatively quick, but it does use recursion, so can be really slow when there is `500` recursions. To actually do the recursion you need to use the `.times(auto&& lambda)` mmber function. So here is the implementation:
+```C++
+namespace mlib
+{
+    template<auto T>
+    struct amount
+    {
+        constexpr auto times(auto&& lambda) const;
+    };
+
+    template<auto T>
+    static constexpr auto amount_t = amount<T>{};
+
+    template<auto T>
+    constexpr auto amount<T>::times(auto&& lambda) const
+    {
+        lambda();
+        if constexpr(T - 1 != 0)
+        {
+            amount_t<T - 1>.times(lambda);
+        }
+        return true;
+    }
+}; // namespace mlib
+```
+An easy way to use it, as shown in the first code snippet is just to use:
+```C++
+amount_t<NUM_OF_RECURSIONS>.times([](){});
+```
+----------------------------------------------------------------------------------------------
+`mlib::get_nth_element` will be a new feature and will allow code like this: [godbolt](https://www.godbolt.org/z/zadoz8fcz):
+```C++
+int main()
+{
+  mlib::get_nth_element<N>(42, 'c', 3.14, true); // will return the Nth element of the args passed in.
+
+mlib::get_nth_element<2>(42, 'c', 3.14, true); // returns 3.14
+}
+```
+This will be useful because 1. It is very fast, is doesn't use recursion it instead just uses the tequnice [Imeadiatley Invoked Lambdas](https://dev.to/pratikparvati/lambda-functions-in-c-39dh#:~:text=An%20immediately%20invoked%20function%20expression%20%28IIFE%29%20is%20a,and%20executing%20code%20without%20polluting%20the%20global%20namespace.). It is relatively simple, and it very easy to use pass the element you want to find, `N` in a template parameter: `mlib::get_nth_element<N>` and then the list of args `args...`. Bear in mind that this function happens at compile time as it has the `constexpr` keyword applied to it. This is a meta-programming library after all!
+
+The function `mlib::get_nth_element` is relatively easy to implement, you can find it on [godbolt](https://www.godbolt.org/z/zadoz8fcz) which also has a bit more detail on the matter, here is the implementation of `mlib::get_nth_element`:
+```C++
+namespace mlib {
+template <auto N> constexpr auto get_nth_element(auto... args) {
+    return [&]<std::size_t... Indexes>(std::index_sequence<Indexes...>) {
+        return [](decltype((void *)Indexes)... DontCare, auto *arg,
+                  auto *...DontCareEither) { return *arg; }(&args...);
+    }(std::make_index_sequence<N>{});
+}
+} // namespace mlib
+```
+---------------------------------------------------------------------------------------------------
